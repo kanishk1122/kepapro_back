@@ -54,7 +54,6 @@ app.get("/", (req, res) => {
     res.cookie("hey", "kansihk").send("Cookie set successfully!");
 });
 
-
 app.post("/register", async (req, res) => {
     try {
         const existingUser = await usermodel.findOne({ email: req.body.email });
@@ -71,15 +70,12 @@ app.post("/register", async (req, res) => {
                     age: req.body.age,
                 });
                 const token = jwt.sign({ email: req.body.email }, "secret");
-                // res.cookie("token", token, { 
-                //     secure: true,
-                //     sameSite:"none",
-                //     path: '/', // Corrected placement of path option
-                //     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
-                // });
-
-                res.redirect("/");
-                // Respond with success message or redirect if needed
+                res.cookie("token", token, { 
+                    secure: true,
+                    sameSite:"none",
+                    path: '/', // Corrected placement of path option
+                    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
+                });
                 res.status(200).json({ message: "User registered successfully" });
             });
         });
@@ -88,7 +84,6 @@ app.post("/register", async (req, res) => {
         return res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.post("/createadmin", async (req, res) => {
     try {
@@ -130,12 +125,12 @@ app.post("/login", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            const token = jwt.sign({ email: req.body.email }, "secret");res.cookie("token", token, { 
-  secure: true, 
-  sameSite: 'none', 
-  expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
-});
-
+            const token = jwt.sign({ email: req.body.email }, "secret");
+            res.cookie("token", token, { 
+              secure: true, 
+              sameSite: 'none', 
+              expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
+            });
             return res.json({ success: true, user: { /* user data */ } });
         } else {
             console.log("Incorrect password");
@@ -157,12 +152,12 @@ app.post("/adminlogin", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
         if (passwordMatch) {
-            const token = jwt.sign({ email: req.body.email }, "secret");res.cookie("token", token, { 
-  secure: true, 
-  sameSite: 'none', 
-  expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
-});
-
+            const token = jwt.sign({ email: req.body.email }, "secret");
+            res.cookie("token", token, { 
+              secure: true, 
+              sameSite: 'none', 
+              expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
+            });
             return res.json({ success: true, admin: { /* admin data */ } });
         } else {
             console.log("Incorrect password");
@@ -214,7 +209,7 @@ app.get("/getall", async (req, res) => {
     }
 });
 
-app.get("/watchall" ,async (req, res) => {
+app.get("/watchall", async (req, res) => {
     try {
         const response = await video.find();
         res.send(response);
