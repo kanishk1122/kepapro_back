@@ -6,6 +6,7 @@ const videoSchema = mongoose.Schema({
     videolink: {
         type: Object, // Ensure videolink is required
     },
+    language: String,
     season: Number,
     ep: Number,
     description:String,
