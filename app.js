@@ -27,6 +27,7 @@ app.use(cors({
     credentials: true, 
     methods: ["GET", "POST", "PUT", "DELETE"],
     secure: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 const upload = multer({ dest: 'uploads/' }); 
