@@ -73,6 +73,7 @@ app.post("/register", async (req, res) => {
                 const token = jwt.sign({ email: req.body.email }, "secret");
                 res.cookie("token", token, { 
                     secure: true,
+                    sameSite:"none",
                     domain:"https://kepapro.vercel.app/register",
                     path: '/', // Corrected placement of path option
                     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
