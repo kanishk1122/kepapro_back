@@ -9,12 +9,11 @@ import adminmodel from './model/admin.js';
 import axios from "axios";
 import multer from 'multer';
 import video from './model/video.js';
-import { jwtDecode } from "jwt-decode";
 
 const app = express();
 
 app.use(session({
-    secret: 'your_secret_key',
+    secret: process.env.SESSION_SECRET || 'your_secret_key',
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true } 
@@ -34,12 +33,12 @@ app.use(cors({
 const upload = multer({ dest: 'uploads/' }); 
 
 const checkToken = (req, res, next) => {
-    const token = req.cookies.token; 
+    const token = req.session.Token; 
     if (token) {
-        jwt.verify(token, 'secret', (err, decoded) => {
+        jwt.verify(token, process.env.JWT_SECRET || 'secret', (err, decoded) => {
             if (err) {
                 console.error('Token verification failed:', err);
-                res.clearCookie('token'); 
+                req.session.destroy(); 
                 return res.status(401).json({ error: 'Unauthorized' });
             } else {
                 req.user = decoded;
@@ -70,7 +69,7 @@ app.post("/register", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                 req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
+                req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
                 res.send(req.session.Token);
             });
         });
@@ -95,7 +94,7 @@ app.post("/createadmin", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
+                req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
                 res.send(req.session.Token);
             });
         });
@@ -115,8 +114,8 @@ app.post("/login", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            const token = jwt.sign({ email: req.body.email }, "secret");
-            req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
+            const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET || 'secret');
+            req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
             res.send(req.session.Token);
         } else {
             console.log("Incorrect password");
@@ -138,7 +137,7 @@ app.post("/adminlogin", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
         if (passwordMatch) {
-            req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
+            req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
             res.send(req.session.Token);
         } else {
             console.log("Incorrect password");
@@ -226,7 +225,7 @@ app.get("/listUploadedUrls", checkToken, async (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-    res.clearCookie("token"); 
+    req.session.destroy(); 
     res.redirect("/");
 });
 
