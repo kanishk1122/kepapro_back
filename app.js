@@ -233,31 +233,39 @@ app.post("/userdetailupdate", async (req, res) => {
 
 app.post("/user/addBookmark", async (req, res) => {
     try {
-        const { animename, season, ep } = req.body;
         
+        if (!req.body.email || !req.body.animename || !req.body.season || !req.body.ep) {
+            return res.status(400).send({ message: "Missing required fields" });
+        }
 
+        console.log(`Adding bookmark for user: ${email}`);
+        
         const result = await usermodel.updateOne(
-            {email:  req.body.email },
+            { email },
             {
                 $push: {
                     bookmarks: {
-                        animename,
-                        season,
-                        ep
+                        animename:req.body.animename,
+                        season:req.body.season,
+                        ep:req.body.ep,
                     }
                 }
             }
         );
 
         if (result.modifiedCount > 0) {
+            console.log("Bookmark added successfully");
             res.status(200).send({ message: "Bookmark added successfully" });
         } else {
+            console.log("User not found");
             res.status(404).send({ message: "User not found" });
         }
     } catch (error) {
+        console.error("An error occurred:", error.message);
         res.status(500).send({ message: "An error occurred", error: error.message });
     }
 });
+
 
 
   
