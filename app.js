@@ -193,10 +193,12 @@ app.get("/getall", async (req, res) => {
 app.get("/userdetail", async (req, res) => {
     const token  = req.session.Token
     const decoded = jwt.decode(token);
+    
     try {
         const user = await usermodel.findOne({email: decoded.email});
         res.send(user);
     } catch (error) {
+        console.log(token,"achsbj");
         res.status(500).json({ error: error.message });
     }
 });
