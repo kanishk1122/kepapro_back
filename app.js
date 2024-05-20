@@ -69,14 +69,8 @@ app.post("/register", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                const token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
-                // res.cookie("token", token, { 
-                //     secure: true,
-                //     sameSite:"none",
-                //     path: '/', // Corrected placement of path option
-                //     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
-                // });
-                res.send(token);
+                 req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
+                res.send(req.session.Token);
             });
         });
     } catch (error) {
@@ -100,13 +94,8 @@ app.post("/createadmin", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                const token = jwt.sign({ email: req.body.email }, "secret");
-                res.cookie("token", token, { 
-                  secure: true, 
-                  sameSite: 'none', 
-                  expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
-                });
-                res.status(200).json({ message: "User created successfully" });
+                req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
+                res.send(req.session.Token);
             });
         });
     } catch (error) {
@@ -126,12 +115,8 @@ app.post("/login", async (req, res) => {
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
             const token = jwt.sign({ email: req.body.email }, "secret");
-            res.cookie("token", token, { 
-              secure: true, 
-              sameSite: 'none', 
-              expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
-            });
-            return res.json({ success: true, user: { /* user data */ } });
+            req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
+            res.send(req.session.Token);
         } else {
             console.log("Incorrect password");
             return res.status(401).send("Incorrect password");
@@ -152,13 +137,8 @@ app.post("/adminlogin", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
         if (passwordMatch) {
-            const token = jwt.sign({ email: req.body.email }, "secret");
-            res.cookie("token", token, { 
-              secure: true, 
-              sameSite: 'none', 
-              expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Setting expiration date to 30 days from now
-            });
-            return res.json({ success: true, admin: { /* admin data */ } });
+            req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
+            res.send(req.session.Token);
         } else {
             console.log("Incorrect password");
             return res.status(401).send("Incorrect password");
