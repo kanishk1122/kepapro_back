@@ -214,10 +214,10 @@ app.post("/userdetailupdate", async (req, res) => {
         const result = await usermodel.updateOne(
             { email: req.body.email },
             {
-                $push: {
-                    "bookmark.animename": req.body.animename,
-                    "bookmark.season": req.body.season,
-                    "bookmark.ep": req.body.ep,
+                $set: {
+                    username: req.body.username,
+                    userpic: req.body.userpic,
+                   
                 }
             }
         );
@@ -247,9 +247,9 @@ app.post("/user/addBookmark", async (req, res) => {
             {
                 $push: {
                     bookmarks: {
-                        animename:req.body.animename,
-                        season:req.body.season,
-                        ep:req.body.ep,
+                    "bookmark.animename": req.body.animename,
+                    "bookmark.season": req.body.season,
+                    "bookmark.ep": req.body.ep,
                     }
                 }
             }
