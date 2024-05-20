@@ -8,11 +8,11 @@ const bookmarkSchema = new mongoose.Schema({
         default: ""
     },
     season: {
-        type: String,
+        type: Number,
         default: ""
     },
     ep: {
-        type: String,
+        type: Number,
         default: ""
     }
 }, { _id: false });
