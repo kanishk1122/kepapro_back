@@ -30,8 +30,8 @@ const userSchema = new mongoose.Schema({
     pi: String,
     userpic: String,
     bookmark: {
-        type: bookmarkSchema,
-        default: () => ({})
+        type: [bookmarkSchema],
+        default: []
     }
 });
 

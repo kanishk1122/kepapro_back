@@ -217,9 +217,6 @@ app.post("/userdetailupdate", async (req, res) => {
                 $set: {
                     username: req.body.username,
                     userpic: req.body.userpic,
-                    "bookmark.animename": req.body.animename,
-                    "bookmark.season": req.body.season,
-                    "bookmark.ep": req.body.ep,
                 }
             }
         );
@@ -234,7 +231,61 @@ app.post("/userdetailupdate", async (req, res) => {
     }
 });
 
+app.post("/user/addBookmark", async (req, res) => {
+    try {
+        const { email, animename, season, ep } = req.body;
+
+        const result = await usermodel.updateOne(
+            { email },
+            {
+                $push: {
+                    bookmarks: {
+                        animename,
+                        season,
+                        ep
+                    }
+                }
+            }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).send({ message: "Bookmark added successfully" });
+        } else {
+            res.status(404).send({ message: "User not found" });
+        }
+    } catch (error) {
+        res.status(500).send({ message: "An error occurred", error: error.message });
+    }
+});
+
+
   
+app.post("/user/updateBookmark", async (req, res) => {
+    try {
+        const { email, bookmarkIndex, animename, season, ep } = req.body;
+
+        const updateField = `bookmarks.${bookmarkIndex}`;
+
+        const result = await usermodel.updateOne(
+            { email },
+            {
+                $set: {
+                    [`${updateField}.animename`]: animename,
+                    [`${updateField}.season`]: season,
+                    [`${updateField}.ep`]: ep
+                }
+            }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).send({ message: "Bookmark updated successfully" });
+        } else {
+            res.status(404).send({ message: "User not found or bookmark not found" });
+        }
+    } catch (error) {
+        res.status(500).send({ message: "An error occurred", error: error.message });
+    }
+});
 
 
 app.get("/watchall", async (req, res) => {
