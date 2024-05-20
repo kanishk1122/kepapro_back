@@ -15,7 +15,11 @@ const userSchema = mongoose.Schema({
     pi:String,
     bookmark:{
         type : Object,
-        default : {},
+        default : {
+            animename : "",
+            season:"",
+            ep: "",
+        },
     },
 });
 
