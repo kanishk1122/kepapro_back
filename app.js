@@ -195,24 +195,19 @@ app.get("/userdetail", async (req, res) => {
         if (!req.session.Token) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        else{
+
         const decoded = jwt.decode(req.session.Token);
-        res.send(decoded); 
 
-        }
-
-        
         // Now you can use the decoded token to fetch user details
         // For example:
         // const user = await usermodel.findOne({ email: decoded.email });
         // res.send(user);
 
-        // Sending decoded token for demonstration
+        res.send(decoded); // Sending decoded token for demonstration
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-    
 });
 
 
