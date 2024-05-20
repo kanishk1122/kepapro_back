@@ -69,7 +69,7 @@ app.post("/register", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                const token = jwt.sign({ email: req.body.email }, "secret");
+                const token = jwt.sign({ email: req.body.email , username : req.body.username  }, "secret");
                 // res.cookie("token", token, { 
                 //     secure: true,
                 //     sameSite:"none",
