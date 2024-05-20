@@ -214,9 +214,10 @@ app.post("/userdetailupdate", async (req, res) => {
         const result = await usermodel.updateOne(
             { email: req.body.email },
             {
-                $set: {
-                    username: req.body.username,
-                    userpic: req.body.userpic,
+                $push: {
+                    "bookmark.animename": req.body.animename,
+                    "bookmark.season": req.body.season,
+                    "bookmark.ep": req.body.ep,
                 }
             }
         );
@@ -230,6 +231,7 @@ app.post("/userdetailupdate", async (req, res) => {
         res.status(500).send({ message: "An error occurred", error: error.message });
     }
 });
+
 
 app.post("/user/addBookmark", async (req, res) => {
     try {
