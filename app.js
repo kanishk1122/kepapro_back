@@ -193,17 +193,6 @@ app.get("/getall", async (req, res) => {
 
 app.get("/userdetail", async (req, res) => {
    
-        
-
-        
-
-        // Now you can use the decoded token to fetch user details
-        // For example:
-        // const user = await usermodel.findOne({ email: decoded.email });
-        // res.send(user);
-        // console.log(decoded)
-        // res.send(decoded); 
-        // Sending decoded token for demonstration
    
    try {
     if (!Token) {
@@ -220,10 +209,33 @@ app.get("/userdetail", async (req, res) => {
    }
 });
 
+app.post("/userdetailupdate", async (req, res) => {
+    try {
+      const result = await usermodel.updateOne(
+        { email: req.body.email },
+        {
+          $set: {
+            username: req.body.username,
+            userpic: req.body.userpic,
+            bookmark: req.body.bookmark,
+          }
+        }
+      );
+      
+      if (result.modifiedCount > 0) {
+        res.status(200).send({ message: "User details updated successfully" });
+      } else {
+        res.status(404).send({ message: "User not found" });
+      }
+    } catch (error) {
+      res.status(500).send({ message: "An error occurred", error: error.message });
+    }
+  });
+  
 
 
 app.get("/watchall", async (req, res) => {
-    try {
+    try { 
         const response = await video.find();
         res.send(response);
     } catch (error) {

@@ -12,6 +12,11 @@ const userSchema = mongoose.Schema({
     email:String,
     password: String,
     passkey:String,
+    pi:String,
+    bookmark:{
+        type : Array,
+        default : [""]
+    },
 });
 
 const User = mongoose.model("User", userSchema);
