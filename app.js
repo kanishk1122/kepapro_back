@@ -9,6 +9,7 @@ import adminmodel from './model/admin.js';
 import axios from "axios";
 import multer from 'multer';
 import video from './model/video.js';
+import { jwtDecode } from "jwt-decode";
 
 const app = express();
 
@@ -188,6 +189,18 @@ app.get("/getall", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
+app.get("/userdetail", async (req, res) => {
+    const token  = req.session.Token
+    const decoded = jwt.decode(token);
+    try {
+        const user = await usermodel.findOne({email: decoded.email});
+        res.send(user);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 app.get("/watchall", async (req, res) => {
     try {
