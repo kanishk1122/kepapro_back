@@ -14,8 +14,8 @@ const userSchema = mongoose.Schema({
     passkey:String,
     pi:String,
     bookmark:{
-        type : Array,
-        default : [""]
+        type : Object,
+        default : {},
     },
 });
 
