@@ -247,9 +247,9 @@ app.post("/user/addBookmark", async (req, res) => {
             {
                 $push: {
                     bookmarks: {
-                    "bookmark.animename": req.body.animename,
-                    "bookmark.season": req.body.season,
-                    "bookmark.ep": req.body.ep,
+                    animename: req.body.animename,
+                    season: req.body.season,
+                    ep: req.body.ep,
                     }
                 }
             }
