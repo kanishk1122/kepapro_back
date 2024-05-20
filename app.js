@@ -9,6 +9,7 @@ import adminmodel from './model/admin.js';
 import axios from "axios";
 import multer from 'multer';
 import video from './model/video.js';
+let Token
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: ['https://kepapro.onrender.com', 'https://kepapro-back.onrender.com',"https://kepapro.vercel.app"], 
+    origin: ['https://kepapro.onrender.com', 'https://kepapro-back.onrender.com',"https://kepapro.vercel.app","http://localhost:4000/"], 
     credentials: true, 
     methods: ["GET", "POST", "PUT", "DELETE"],
     secure: true,
@@ -69,7 +70,7 @@ app.post("/register", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
+                Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
                 res.send(req.session.Token);
             });
         });
@@ -94,8 +95,8 @@ app.post("/createadmin", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
-                res.send(req.session.Token);
+                Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
+                res.send(Token);
             });
         });
     } catch (error) {
@@ -115,8 +116,8 @@ app.post("/login", async (req, res) => {
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
             const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET || 'secret');
-            req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
-            res.send(req.session.Token);
+            Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
+            res.send(Token);
         } else {
             console.log("Incorrect password");
             return res.status(401).send("Incorrect password");
@@ -137,8 +138,8 @@ app.post("/adminlogin", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
         if (passwordMatch) {
-            req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
-            res.send(req.session.Token);
+            Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
+            res.send(Token);
         } else {
             console.log("Incorrect password");
             return res.status(401).send("Incorrect password");
@@ -190,16 +191,17 @@ app.get("/getall", async (req, res) => {
 });
 
 app.get("/userdetail", async (req, res) => {
-    const token  = req.session.Token
-    const decoded = jwt.decode(token);
+   
+    const decoded = jwt.decode(Token);
+
     
-    try {
-        const user = await usermodel.findOne({email: decoded.email});
-        res.send(user);
-    } catch (error) {
-        console.log(token,"achsbj");
-        res.status(500).json({ error: error.message });
-    }
+    // try {
+    //     const user = await usermodel.findOne({email: decoded.email});
+    //     res.send(user);
+    // } catch (error) {
+        console.log(Token);
+    //     res.status(500).json({ error: error.message });
+    // }
 });
 
 
