@@ -70,7 +70,7 @@ app.post("/register", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
+                req.session.Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
                 res.send(req.session.Token);
             });
         });
@@ -191,18 +191,27 @@ app.get("/getall", async (req, res) => {
 });
 
 app.get("/userdetail", async (req, res) => {
-   
-    const decoded = jwt.decode(Token);
+    try {
+        if (req.session.Token) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
 
-    
-    // try {
-    //     const user = await usermodel.findOne({email: decoded.email});
-    //     res.send(user);
-    // } catch (error) {
-        console.log(Token);
-    //     res.status(500).json({ error: error.message });
-    // }
+        
+
+        // Now you can use the decoded token to fetch user details
+        // For example:
+        // const user = await usermodel.findOne({ email: decoded.email });
+        // res.send(user);
+
+        // Sending decoded token for demonstration
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    const decoded = jwt.decode(req.session.Token);
+    res.send(decoded); 
 });
+
 
 
 app.get("/watchall", async (req, res) => {
