@@ -192,10 +192,8 @@ app.get("/getall", async (req, res) => {
 });
 
 app.get("/userdetail", async (req, res) => {
-    try {
-        if (!Token) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
+   
+        
 
         
 
@@ -206,13 +204,20 @@ app.get("/userdetail", async (req, res) => {
         // console.log(decoded)
         // res.send(decoded); 
         // Sending decoded token for demonstration
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+   
+   try {
+    if (!Token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }else{const decoded = jwt.decode(Token);
+        console.log(Token)
+        res.send(decoded);
     }
-    const decoded = jwt.decode(Token);
-    console.log(Token)
-    res.send(decoded);
+    
+   } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+
+   }
 });
 
 
