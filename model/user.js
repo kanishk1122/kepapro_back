@@ -2,25 +2,37 @@ import mongoose from "mongoose";
 
 mongoose.connect("mongodb+srv://apimails1:F8xaA76TOrDA64Rd@cluster0.ljlgl7m.mongodb.net/");
 
-const userSchema = mongoose.Schema({
+const bookmarkSchema = new mongoose.Schema({
+    animename: {
+        type: String,
+        default: ""
+    },
+    season: {
+        type: String,
+        default: ""
+    },
+    ep: {
+        type: String,
+        default: ""
+    }
+}, { _id: false });
+
+const userSchema = new mongoose.Schema({
     id: String,
     username: String,
     doj: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
-    email:String,
+    email: String,
     password: String,
-    passkey:String,
-    pi:String,
-    bookmark:{
-        type : Object,
-        default : {
-            animename : "",
-            season:"",
-            ep: "",
-        },
-    },
+    passkey: String,
+    pi: String,
+    userpic: String,
+    bookmark: {
+        type: bookmarkSchema,
+        default: () => ({})
+    }
 });
 
 const User = mongoose.model("User", userSchema);

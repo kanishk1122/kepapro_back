@@ -211,26 +211,29 @@ app.get("/userdetail", async (req, res) => {
 
 app.post("/userdetailupdate", async (req, res) => {
     try {
-      const result = await usermodel.updateOne(
-        { email: req.body.email },
-        {
-          $set: {
-            username: req.body.username,
-            userpic: req.body.userpic,
-            bookmark: req.body.bookmark,
-          }
+        const result = await usermodel.updateOne(
+            { email: req.body.email },
+            {
+                $set: {
+                    username: req.body.username,
+                    userpic: req.body.userpic,
+                    "bookmark.animename": req.body.animename,
+                    "bookmark.season": req.body.season,
+                    "bookmark.ep": req.body.ep,
+                }
+            }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).send({ message: "User details updated successfully" });
+        } else {
+            res.status(404).send({ message: "User not found" });
         }
-      );
-      
-      if (result.modifiedCount > 0) {
-        res.status(200).send({ message: "User details updated successfully" });
-      } else {
-        res.status(404).send({ message: "User not found" });
-      }
     } catch (error) {
-      res.status(500).send({ message: "An error occurred", error: error.message });
+        res.status(500).send({ message: "An error occurred", error: error.message });
     }
-  });
+});
+
   
 
 
