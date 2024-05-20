@@ -233,10 +233,11 @@ app.post("/userdetailupdate", async (req, res) => {
 
 app.post("/user/addBookmark", async (req, res) => {
     try {
-        const { email, animename, season, ep } = req.body;
+        const { animename, season, ep } = req.body;
+        
 
         const result = await usermodel.updateOne(
-            { email },
+            {email:  req.body.email },
             {
                 $push: {
                     bookmarks: {
