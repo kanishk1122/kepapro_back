@@ -196,7 +196,8 @@ app.get("/userdetail", async (req, res) => {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        
+        const decoded = jwt.decode(req.session.Token);
+    res.send(decoded); 
 
         // Now you can use the decoded token to fetch user details
         // For example:
@@ -208,8 +209,7 @@ app.get("/userdetail", async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-    const decoded = jwt.decode(req.session.Token);
-    res.send(decoded); 
+    
 });
 
 
