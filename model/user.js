@@ -5,9 +5,9 @@ mongoose.connect("mongodb+srv://apimails1:F8xaA76TOrDA64Rd@cluster0.ljlgl7m.mong
 
 
 const userSchema = new mongoose.Schema({
-    username: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    username: { type: String},
+    email: { type: String,  unique: true },
+    password: { type: String},
     age: { type: Number },
     doj: {
         type: Date,
