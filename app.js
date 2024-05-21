@@ -9,7 +9,6 @@ import adminmodel from './model/admin.js';
 import axios from "axios";
 import multer from 'multer';
 import video from './model/video.js';
-let Token
 
 const app = express();
 
@@ -17,33 +16,32 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'your_secret_key',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true } 
+    cookie: { secure: true }
 }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: ['https://kepapro.onrender.com', 'https://kepapro-back.onrender.com',"https://kepapro.vercel.app","http://localhost:4000/","https://fantastic-journey-jjrx6wwjxxvjf5j6w-3000.app.github.dev/"], 
-    credentials: true, 
+    origin: ['https://kepapro.onrender.com', 'https://kepapro-back.onrender.com', "https://kepapro.vercel.app", "http://localhost:4000/", "https://fantastic-journey-jjrx6wwjxxvjf5j6w-3000.app.github.dev/"],
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    secure: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-const upload = multer({ dest: 'uploads/' }); 
+const upload = multer({ dest: 'uploads/' });
 
 const checkToken = (req, res, next) => {
-    const token = req.session.Token; 
+    const token = req.session.Token;
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET || 'secret', (err, decoded) => {
             if (err) {
                 console.error('Token verification failed:', err);
-                req.session.destroy(); 
+                req.session.destroy();
                 return res.status(401).json({ error: 'Unauthorized' });
             } else {
                 req.user = decoded;
-                next(); 
+                next();
             }
         });
     } else {
@@ -52,7 +50,7 @@ const checkToken = (req, res, next) => {
 };
 
 app.get("/", (req, res) => {
-    res.cookie("hey", "kansihk").send("Cookie set successfully!");
+    res.cookie("hey", "kanishk").send("Cookie set successfully!");
 });
 
 app.post("/register", async (req, res) => {
@@ -62,19 +60,17 @@ app.post("/register", async (req, res) => {
             return res.status(409).json({ message: "User already exists" });
         }
 
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(req.body.password, salt, async (err, hash) => {
-                const newUser = await usermodel.create({
-                    username: req.body.username,
-                    email: req.body.email,
-                    password: hash,
-                    age: req.body.age,
-                });
-              Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
-                res.send(Token);
-                console.log(Token,"this from register");
-            });
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(req.body.password, salt);
+        const newUser = await usermodel.create({
+            username: req.body.username,
+            email: req.body.email,
+            password: hash,
+            age: req.body.age,
         });
+        const token = jwt.sign({ email: req.body.email, username: req.body.username }, process.env.JWT_SECRET || 'secret');
+        req.session.Token = token;
+        res.send(token);
     } catch (error) {
         console.error("Error:", error.message);
         return res.status(500).send("Internal Server Error");
@@ -88,24 +84,22 @@ app.post("/createadmin", async (req, res) => {
             return res.status(409).json({ message: "User already exists" });
         }
 
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(req.body.password, salt, async (err, hash) => {
-                const newAdmin = await adminmodel.create({
-                    username: req.body.username,
-                    email: req.body.email,
-                    password: hash,
-                    age: req.body.age,
-                });
-                Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
-                res.send(Token);
-            });
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(req.body.password, salt);
+        const newAdmin = await adminmodel.create({
+            username: req.body.username,
+            email: req.body.email,
+            password: hash,
+            age: req.body.age,
         });
+        const token = jwt.sign({ email: req.body.email, username: req.body.username }, process.env.JWT_SECRET || 'secret');
+        req.session.Token = token;
+        res.send(token);
     } catch (error) {
         console.error("Error:", error.message);
         return res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.post("/login", async (req, res) => {
     try {
@@ -117,8 +111,9 @@ app.post("/login", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            Token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret');
-            return res.send(Token);
+            const token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret');
+            req.session.Token = token;
+            return res.send(token);
         } else {
             console.log("Incorrect password");
             return res.status(401).send("Incorrect password");
@@ -128,9 +123,6 @@ app.post("/login", async (req, res) => {
         return res.status(500).send("Internal Server Error");
     }
 });
-
-
-
 
 app.post("/adminlogin", async (req, res) => {
     try {
@@ -142,8 +134,9 @@ app.post("/adminlogin", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
         if (passwordMatch) {
-            Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
-            res.send(Token);
+            const token = jwt.sign({ email: req.body.email, username: req.body.username }, process.env.JWT_SECRET || 'secret');
+            req.session.Token = token;
+            res.send(token);
         } else {
             console.log("Incorrect password");
             return res.status(401).send("Incorrect password");
@@ -195,51 +188,31 @@ app.get("/getall", async (req, res) => {
 });
 
 app.get("/userdetail", async (req, res) => {
-   
-   
-   try {
-    if (!Token) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }else{const decoded = jwt.decode(Token);
-        const oneuser = usermodel.findOne({email : decoded.email})
-        res.send(oneuser);
+    try {
+        const token = req.session.Token;
+        if (!token) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const decoded = jwt.decode(token);
+        if (!decoded || !decoded.email) {
+            return res.status(400).json({ error: 'Invalid token' });
+        }
+
+        const oneuser = await usermodel.findOne({ email: decoded.email }).lean(); // Use lean() to return plain JS object
+        if (!oneuser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json(oneuser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-    
-   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-
-   }
 });
-
-// app.post("/userdetailupdate", async (req, res) => {
-//     try {
-//         const result = await usermodel.updateOne(
-//             { email: req.body.email },
-//             {
-//                 $set: {
-//                     username: req.body.username,
-//                     userpic: req.body.userpic,
-                   
-//                 }
-//             }
-//         );
-
-//         if (result.modifiedCount > 0) {
-//             res.status(200).send({ message: "User details updated successfully" });
-//         } else {
-//             res.status(404).send({ message: "User not found" });
-//         }
-//     } catch (error) {
-//         res.status(500).send({ message: "An error occurred", error: error.message });
-//     }
-// });
-
 
 app.post("/user/addBookmark", async (req, res) => {
     try {
-        
-
         if (!req.body.email || !req.body.animename || !req.body.season || !req.body.ep) {
             return res.status(400).send({ message: "Missing required fields" });
         }
@@ -257,10 +230,10 @@ app.post("/user/addBookmark", async (req, res) => {
             {
                 $push: {
                     bookmarks: {
-                        animename : req.body.animename,
-                         season :req.body.season,
-                          ep:req.body.ep,
-                         }
+                        animename: req.body.animename,
+                        season: req.body.season,
+                        ep: req.body.ep,
+                    }
                 }
             }
         );
@@ -277,6 +250,31 @@ app.post("/user/addBookmark", async (req, res) => {
         res.status(500).send({ message: "An error occurred", error: error.message });
     }
 });
+
+
+
+// app.post("/userdetailupdate", async (req, res) => {
+//     try {
+//         const result = await usermodel.updateOne(
+//             { email: req.body.email },    
+//             {
+//                 $set: {
+//                     username: req.body.username,    
+//                     userpic: req.body.userpic,
+                   
+//                 }
+//             }
+//         );
+
+//         if (result.modifiedCount > 0) {
+//             res.status(200).send({ message: "User details updated successfully" });    
+//         } else {
+//             res.status(404).send({ message: "User not found" });    
+//         }
+//     } catch (error) {
+//         res.status(500).send({ message: "An error occurred", error: error.message });    
+//     }
+// });
 
 
 
