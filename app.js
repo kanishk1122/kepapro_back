@@ -249,7 +249,7 @@ app.post("/user/addBookmark", async (req, res) => {
             return res.status(404).send({ message: "User not found" });
         }
 
-        const result = await User.updateOne(
+        const result = await usermodel.updateOne(
             { email: email },
             {
                 $push: {
