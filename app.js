@@ -270,7 +270,7 @@ app.post("/user/addBookmark", async (req, res) => {
         }
     } catch (error) {
         console.error("An error occurred:", error.message);
-        res.status(502).send({ message: "An error occurred", error: error.message });
+        res.status(500).send({ message: "An error occurred", error: error.message });
     }
 });
 
