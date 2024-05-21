@@ -201,8 +201,8 @@ app.get("/userdetail", async (req, res) => {
     if (!Token) {
         return res.status(401).json({ error: 'Unauthorized' });
     }else{const decoded = jwt.decode(Token);
-        console.log(Token)
-        res.send(decoded);
+        const oneuser = usermodel.findOne({email : decoded.email})
+        res.send(oneuser);
     }
     
    } catch (error) {
