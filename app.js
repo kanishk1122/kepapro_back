@@ -116,10 +116,10 @@ app.post("/login", async (req, res) => {
             return res.status(404).send("User not found");
         }
 
-        const passwordMatch =  bcrypt.compare(req.body.password, user.password);
+        const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
             const token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret');
-            res.json({ token });
+            return res.json({ token });
         } else {
             console.log("Incorrect password");
             return res.status(401).send("Incorrect password");
@@ -129,6 +129,7 @@ app.post("/login", async (req, res) => {
         return res.status(500).send("Internal Server Error");
     }
 });
+
 
 
 
