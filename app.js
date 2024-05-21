@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: ['https://kepapro.onrender.com', 'https://kepapro-back.onrender.com',"https://kepapro.vercel.app","http://localhost:4000/","https://fantastic-journey-jjrx6wwjxxvjf5j6w-3000.app.github.dev/"], 
+    origin: ['https://kepapro.onrender.com', 'https://kepapro-back.onrender.com',"https://kepapro.vercel.app","http://localhost:4000","https://fantastic-journey-jjrx6wwjxxvjf5j6w-3000.app.github.dev/"], 
     credentials: true, 
     methods: ["GET", "POST", "PUT", "DELETE"],
     secure: true,
