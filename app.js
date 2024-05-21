@@ -256,11 +256,11 @@ app.post("/user/addBookmark", async (req, res) => {
             { email: req.body.email },
             {
                 $push: {
-                    bookmark: [{
+                    bookmarks: {
                         animename : req.body.animename,
                          season :req.body.season,
                           ep:req.body.ep,
-                         }]
+                         }
                 }
             }
         );
