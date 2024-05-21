@@ -196,7 +196,7 @@ app.get("/getall", async (req, res) => {
 
 app.post("/userdetail", async (req, res) => {
    try {
-    const oneuser = await findOne({email:req.body.email})
+    const oneuser = await usermodel.findOne({email:req.body.email})
     res.send(oneuser)
     
    } catch (error) {
