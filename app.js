@@ -117,7 +117,7 @@ app.post("/login", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            Token = "hry" ;
+            Token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret') ;
             return res.send(Token);
         } else {
             console.log("Incorrect password");
@@ -130,7 +130,7 @@ app.post("/login", async (req, res) => {
 });
 
 
-// jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret')
+
 
 app.post("/adminlogin", async (req, res) => {
     try {
