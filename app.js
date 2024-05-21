@@ -244,7 +244,7 @@ app.post("/user/addBookmark", async (req, res) => {
             return res.status(400).send({ message: "Missing required fields" });
         }
 
-        console.log(`Adding bookmark for user: ${email}`);
+        console.log(`Adding bookmark for user: ${req.body.email}`);
 
         const user = await usermodel.findOne({ email: req.body.email });
         if (!user) {
