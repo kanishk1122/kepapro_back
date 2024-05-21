@@ -238,25 +238,29 @@ app.get("/userdetail", async (req, res) => {
 
 app.post("/user/addBookmark", async (req, res) => {
     try {
-        const { email, animename, season, ep } = req.body;
+        
 
-        if (!email || !animename || !season || !ep) {
+        if (!req.body.email || !req.body.animename || !req.body.season || !req.body.ep) {
             return res.status(400).send({ message: "Missing required fields" });
         }
 
         console.log(`Adding bookmark for user: ${email}`);
 
-        const user = await usermodel.findOne({ email: email });
+        const user = await usermodel.findOne({ email: req.body.email });
         if (!user) {
             console.log("User not found");
             return res.status(404).send({ message: "User not found" });
         }
 
         const result = await usermodel.updateOne(
-            { email: email },
+            { email: req.body.email },
             {
                 $push: {
-                    bookmark: { animename, season, ep }
+                    bookmark: { 
+                        animename : req.body.animename,
+                         season :req.body.season,
+                          ep:req.body.ep,
+                         }
                 }
             }
         );
