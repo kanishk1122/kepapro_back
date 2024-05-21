@@ -9,7 +9,7 @@ import adminmodel from './model/admin.js';
 import axios from "axios";
 import multer from 'multer';
 import video from './model/video.js';
-let Token
+let Token =""
 
 const app = express();
 
@@ -117,7 +117,7 @@ app.post("/login", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            Token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret');
+            Token = "hry" ;
             return res.send(Token);
         } else {
             console.log("Incorrect password");
@@ -130,7 +130,7 @@ app.post("/login", async (req, res) => {
 });
 
 
-
+// jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret')
 
 app.post("/adminlogin", async (req, res) => {
     try {
@@ -194,21 +194,14 @@ app.get("/getall", async (req, res) => {
     }
 });
 
-app.get("/userdetail", async (req, res) => {
-   
-   
+app.post("/userdetail", async (req, res) => {
    try {
-    if (!Token) {
-        return res.status(401).json({ error: 'Unauthorized', token: Token });
-    }else{const decoded = jwt.decode(Token);
-        const oneuser = usermodel.findOne({email : decoded.email})
-        res.send(oneuser);
-    }
+    const oneuser = await findOne({email:req.body.email})
+    res.send(oneuser)
     
    } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error', token: Token  });
-
+    res.status(500).send("Internal Server Error");
    }
 });   
 
