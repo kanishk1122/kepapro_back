@@ -106,6 +106,8 @@ app.post("/createadmin", async (req, res) => {
     }
 });
 
+
+
 app.post("/login", async (req, res) => {
     try {
         const user = await usermodel.findOne({ email: req.body.email });
@@ -114,11 +116,10 @@ app.post("/login", async (req, res) => {
             return res.status(404).send("User not found");
         }
 
-        const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+        const passwordMatch =  bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET || 'secret');
-            Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
-            res.send(Token);
+            const token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret');
+            res.json({ token });
         } else {
             console.log("Incorrect password");
             return res.status(401).send("Incorrect password");
@@ -128,6 +129,8 @@ app.post("/login", async (req, res) => {
         return res.status(500).send("Internal Server Error");
     }
 });
+
+
 
 app.post("/adminlogin", async (req, res) => {
     try {
