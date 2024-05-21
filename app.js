@@ -212,28 +212,28 @@ app.get("/userdetail", async (req, res) => {
    }
 });
 
-app.post("/userdetailupdate", async (req, res) => {
-    try {
-        const result = await usermodel.updateOne(
-            { email: req.body.email },
-            {
-                $set: {
-                    username: req.body.username,
-                    userpic: req.body.userpic,
+// app.post("/userdetailupdate", async (req, res) => {
+//     try {
+//         const result = await usermodel.updateOne(
+//             { email: req.body.email },
+//             {
+//                 $set: {
+//                     username: req.body.username,
+//                     userpic: req.body.userpic,
                    
-                }
-            }
-        );
+//                 }
+//             }
+//         );
 
-        if (result.modifiedCount > 0) {
-            res.status(200).send({ message: "User details updated successfully" });
-        } else {
-            res.status(404).send({ message: "User not found" });
-        }
-    } catch (error) {
-        res.status(500).send({ message: "An error occurred", error: error.message });
-    }
-});
+//         if (result.modifiedCount > 0) {
+//             res.status(200).send({ message: "User details updated successfully" });
+//         } else {
+//             res.status(404).send({ message: "User not found" });
+//         }
+//     } catch (error) {
+//         res.status(500).send({ message: "An error occurred", error: error.message });
+//     }
+// });
 
 
 app.post("/user/addBookmark", async (req, res) => {
@@ -270,7 +270,7 @@ app.post("/user/addBookmark", async (req, res) => {
         }
     } catch (error) {
         console.error("An error occurred:", error.message);
-        res.status(500).send({ message: "An error occurred", error: error.message });
+        res.status(502).send({ message: "An error occurred", error: error.message });
     }
 });
 
@@ -278,32 +278,32 @@ app.post("/user/addBookmark", async (req, res) => {
 
 
   
-app.post("/user/updateBookmark", async (req, res) => {
-    try {
-        const { email, bookmarkIndex, animename, season, ep } = req.body;
+// app.post("/user/updateBookmark", async (req, res) => {
+//     try {
+//         const { email, bookmarkIndex, animename, season, ep } = req.body;
 
-        const updateField = `bookmarks.${bookmarkIndex}`;
+//         const updateField = `bookmarks.${bookmarkIndex}`;
 
-        const result = await usermodel.updateOne(
-            { email },
-            {
-                $set: {
-                    [`${updateField}.animename`]: animename,
-                    [`${updateField}.season`]: season,
-                    [`${updateField}.ep`]: ep
-                }
-            }
-        );
+//         const result = await usermodel.updateOne(
+//             { email },
+//             {
+//                 $set: {
+//                     [`${updateField}.animename`]: animename,
+//                     [`${updateField}.season`]: season,
+//                     [`${updateField}.ep`]: ep
+//                 }
+//             }
+//         );
 
-        if (result.modifiedCount > 0) {
-            res.status(200).send({ message: "Bookmark updated successfully" });
-        } else {
-            res.status(404).send({ message: "User not found or bookmark not found" });
-        }
-    } catch (error) {
-        res.status(500).send({ message: "An error occurred", error: error.message });
-    }
-});
+//         if (result.modifiedCount > 0) {
+//             res.status(200).send({ message: "Bookmark updated successfully" });
+//         } else {
+//             res.status(404).send({ message: "User not found or bookmark not found" });
+//         }
+//     } catch (error) {
+//         res.status(500).send({ message: "An error occurred", error: error.message });
+//     }
+// });
 
 
 app.get("/watchall", async (req, res) => {
