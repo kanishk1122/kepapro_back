@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    pi:String,
+    userpic:String,
     bookmarks: [{
         animename: String,
         season: Number,
