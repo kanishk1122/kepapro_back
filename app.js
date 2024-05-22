@@ -248,28 +248,28 @@ app.post("/user/addBookmark", async (req, res) => {
     }
 });
 
-// app.post("/userdetailupdate", async (req, res) => {
-//     try {
-//         const result = await usermodel.updateOne(
-//             { email: req.body.email },    
-//             {
-//                 $set: {
-//                     username: req.body.username,    
-//                     userpic: req.body.userpic,
+app.post("/userdetailupdate", async (req, res) => {
+    try {
+        const result = await usermodel.updateOne(
+            { email: req.body.email },    
+            {
+                $set: {
+                    username: req.body.username,    
+                    userpic: req.body.userpic,
                    
-//                 }
-//             }
-//         );
+                }
+            }
+        );
 
-//         if (result.modifiedCount > 0) {
-//             res.status(200).send({ message: "User details updated successfully" });    
-//         } else {
-//             res.status(404).send({ message: "User not found" });    
-//         }
-//     } catch (error) {
-//         res.status(500).send({ message: "An error occurred", error: error.message });    
-//     }
-// });
+        if (result.modifiedCount > 0) {
+            res.status(200).send({ message: "User details updated successfully" });    
+        } else {
+            res.status(404).send({ message: "User not found" });    
+        }
+    } catch (error) {
+        res.status(500).send({ message: "An error occurred", error: error.message });    
+    }
+});
 
 
 
