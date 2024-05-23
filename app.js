@@ -251,35 +251,52 @@ app.post("/user/addBookmark", async (req, res) => {
 app.post("/userdetailupdate", async (req, res) => {
     try {
         const email = req.body.email;
-        const username = req.body.username;
-        const userpic = req.body.userpic;
+        const newUsername = req.body.username;
+        const newUserpic = req.body.userpic;
 
         console.log("Update request received for email:", email);
-        console.log("New username:", username);
-        console.log("New userpic:", userpic);
+        console.log("New username:", newUsername);
+        console.log("New userpic:", newUserpic);
 
-        const result = await usermodel.updateOne(
-            { email: email },    
-            {
-                $set: {
-                    username: username,
-                    userpic: userpic,
+        // Find the current user details
+        const user = await usermodel.findOne({ email: email });
+
+        if (!user) {
+            res.status(404).send({ message: "User not found" });
+            return;
+        }
+
+        console.log("Current username:", user.username);
+        console.log("Current userpic:", user.userpic);
+
+        // Update only if the new values are different
+        if (user.username !== newUsername || user.userpic !== newUserpic) {
+            const result = await usermodel.updateOne(
+                { email: email },    
+                {
+                    $set: {
+                        username: newUsername,
+                        userpic: newUserpic,
+                    }
                 }
+            );
+
+            console.log("Update result:", result);
+
+            if (result.modifiedCount > 0) {
+                res.status(200).send({ message: "User details updated successfully" });    
+            } else {
+                res.status(404).send({ message: "User not found" });    
             }
-        );
-
-        console.log("Update result:", result);
-
-        if (result.modifiedCount > 0) {
-            res.status(200).send({ message: "User details updated successfully" });    
         } else {
-            res.status(404).send({ message: "User not found" });    
+            res.status(200).send({ message: "No changes detected, user details are the same" });
         }
     } catch (error) {
         console.error("An error occurred:", error);
         res.status(500).send({ message: "An error occurred", error: error.message });    
     }
 });
+
 
 
 
