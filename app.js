@@ -251,7 +251,7 @@ app.post("/user/addBookmark", async (req, res) => {
 app.post("/userdetailupdate", async (req, res) => {
     try {
         const result = await usermodel.updateOne(
-            { email: req.body.email },    
+            { email: "kanishk21soni@gmail.com" },    
             {
                 $set: {
                     username: req.body.username,    
