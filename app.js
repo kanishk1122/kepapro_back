@@ -250,16 +250,25 @@ app.post("/user/addBookmark", async (req, res) => {
 
 app.post("/userdetailupdate", async (req, res) => {
     try {
+        const email = req.body.email;
+        const username = req.body.username;
+        const userpic = req.body.userpic;
+
+        console.log("Update request received for email:", email);
+        console.log("New username:", username);
+        console.log("New userpic:", userpic);
+
         const result = await usermodel.updateOne(
-            { email: "kanishk21soni@gmail.com" },    
+            { email: email },    
             {
                 $set: {
-                    username: req.body.username,    
-                    userpic: req.body.userpic,
-                   
+                    username: username,
+                    userpic: userpic,
                 }
             }
         );
+
+        console.log("Update result:", result);
 
         if (result.modifiedCount > 0) {
             res.status(200).send({ message: "User details updated successfully" });    
@@ -267,9 +276,11 @@ app.post("/userdetailupdate", async (req, res) => {
             res.status(404).send({ message: "User not found" });    
         }
     } catch (error) {
+        console.error("An error occurred:", error);
         res.status(500).send({ message: "An error occurred", error: error.message });    
     }
 });
+
 
 
 
