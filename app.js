@@ -347,7 +347,7 @@ app.post("/updatevideo", async (req, res) => {
   trending: req.body.trending,
   popular: req.body.populer,
 
-}
+
                 }
             }
         );
