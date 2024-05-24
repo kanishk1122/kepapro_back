@@ -330,6 +330,38 @@ app.post("/userdetailupdate", async (req, res) => {
 //     }
 // });
 
+app.post("/updatevideo", async (req, res) => {
+    try {
+
+        const result = await video.updateOne(
+            { _id : req.body.id },
+            {
+                $set: {
+  videolink: req.body.videolink,
+  season: req.body.season,
+  ep: req.body.ep,
+  description: req.body.description,
+  genres: req.body.genres,
+  animename:req.body.animename,
+  thumbnail: req.body.thumbnail,
+  trending: req.body.trending,
+  popular: req.body.populer,
+
+}
+                }
+            }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).send({ message: "Bookmark updated successfully" });
+        } else {
+            res.status(404).send({ message: "User not found or bookmark not found" });
+        }
+    } catch (error) {
+        res.status(500).send({ message: "An error occurred", error: error.message });
+    }
+});
+
 
 app.get("/watchall", async (req, res) => {
     try { 
