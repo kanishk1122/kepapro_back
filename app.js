@@ -40,7 +40,7 @@ const checkToken = (req, res, next) => {
             if (err) {
                 console.error('Token verification failed:', err);
                 req.session.destroy(); 
-                return res.status(401).json({ error: 'Unauthorized' });
+                return res.status(401).send({ error: 'Unauthorized' });
             } else {
                 req.user = decoded;
                 next(); 
@@ -59,7 +59,7 @@ app.post("/register", async (req, res) => {
     try {
         const existingUser = await usermodel.findOne({ email: req.body.email });
         if (existingUser) {
-            return res.status(409).json({ message: "User already exists" });
+            return res.status(409).send({ message: "User already exists" });
         }
 
         bcrypt.genSalt(10, (err, salt) => {
@@ -70,7 +70,7 @@ app.post("/register", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-              Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
+              Token = jwt.sign({ email: req.body.email , username : req.body.username   }, process.env.JWT_SECRET || 'secret');
                 res.send(Token);
                 console.log(Token,"this from register");
             });
@@ -85,7 +85,7 @@ app.post("/createadmin", async (req, res) => {
     try {
         const existingUser = await adminmodel.findOne({ email: req.body.email });
         if (existingUser) {
-            return res.status(409).json({ message: "User already exists" });
+            return res.status(409).send({ message: "User already exists" });
         }
 
         bcrypt.genSalt(10, (err, salt) => {
@@ -96,7 +96,7 @@ app.post("/createadmin", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                Token = jwt.sign({ email: req.body.email , username : req.body.username  }, process.env.JWT_SECRET || 'secret');
+                Token = jwt.sign({ email: req.body.email , username : req.body.username , Admin : "yes"  }, process.env.JWT_SECRET || 'secret');
                 res.send(Token);
             });
         });
