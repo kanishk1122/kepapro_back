@@ -52,15 +52,16 @@ const checkToken = (req, res, next) => {
 };
 
 app.get("/", async (req, res) => {
-    try {
-        const deletedata = await video.deleteMany({ animename: "Jurassic World" });
-        if (deletedata.deletedCount === 0) {
-            return res.status(404).json({ message: "No documents found with animename 'Jurassic World'" });
-        }
-        res.status(200).json(deletedata);
-    } catch (error) {
-        res.status(500).json({ message: "An error occurred while deleting documents", error: error.message });
-    }
+    res.send("hellow")
+    // try {
+    //     const deletedata = await video.deleteMany({ animename: "Jurassic World" });
+    //     if (deletedata.deletedCount === 0) {
+    //         return res.status(404).json({ message: "No documents found with animename 'Jurassic World'" });
+    //     }
+    //     res.status(200).json(deletedata);
+    // } catch (error) {
+    //     res.status(500).json({ message: "An error occurred while deleting documents", error: error.message });
+    // }
 });
 
 
