@@ -51,8 +51,9 @@ const checkToken = (req, res, next) => {
     }
 };
 
-app.get("/", (req, res) => {
-    res.cookie("hey", "kansihk").send("Cookie set successfully!");
+app.get("/", async (req, res) => {
+    const deletedata = await video.deleteMany({animename : "Jurassic World"})
+    res.json(deletedata);
 });
 
 app.post("/register", async (req, res) => {
