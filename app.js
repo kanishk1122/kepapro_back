@@ -307,8 +307,29 @@ app.post("/userdetailupdate", async (req, res) => {
 });
 
 
+ 
+app.get("/comment", async (req, res) => {
+    try {
+        const { animename, season, ep, email, comment } = req.body;
 
+        const commentAdd = await Video.updateOne(
+            { animename, season, ep },
+            {
+                $push: {
+                    comments: {
+                        email,
+                        comment
+                    }
+                }
+            }
+        );
 
+        res.send({ message: "Comment added successfully", data: commentAdd });
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        res.status(500).send({ message: "Internal server error" });
+    }
+});
 
 
   
