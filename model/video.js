@@ -4,7 +4,8 @@ mongoose.connect("mongodb+srv://apimails1:F8xaA76TOrDA64Rd@cluster0.ljlgl7m.mong
 
 const commentSchema = new mongoose.Schema({
     email: String,
-    comment: String
+    comment: String,
+    image:String,
 });
 
 const videoSchema = new mongoose.Schema({
