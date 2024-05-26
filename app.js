@@ -309,14 +309,19 @@ app.post("/userdetailupdate", async (req, res) => {
 
 
  
-app.use(express.json());
-
-app.get("/comment", async (req, res) => {
+app.post("/comment", async (req, res) => {
     try {
         const { animename, season, ep, email, comment } = req.body;
 
         if (!animename || !season || !ep || !email || !comment) {
-            return res.status(400).send({ message: "Missing required fields" , gmail : email ,animename: animename, season: season , ep: eq, comment : comment    });
+            return res.status(400).send({ 
+                message: "Missing required fields", 
+                gmail: email, 
+                animename: animename, 
+                season: season, 
+                ep: ep, 
+                comment: comment 
+            });
         }
 
         const commentAdd = await video.updateOne(
