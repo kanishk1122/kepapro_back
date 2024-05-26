@@ -316,7 +316,7 @@ app.get("/comment", async (req, res) => {
         const { animename, season, ep, email, comment } = req.body;
 
         if (!animename || !season || !ep || !email || !comment) {
-            return res.status(400).send({ message: "Missing required fields" });
+            return res.status(400).send({ message: "Missing required fields" , gmail : email ,animename: animename, season: season , ep: eq, comment : comment    });
         }
 
         const commentAdd = await video.updateOne(
