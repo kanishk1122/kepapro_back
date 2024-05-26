@@ -309,28 +309,44 @@ app.post("/userdetailupdate", async (req, res) => {
 
 
  
+app.use(express.json());
+
 app.get("/comment", async (req, res) => {
     try {
         const { animename, season, ep, email, comment } = req.body;
 
-        const commentAdd = await Video.updateOne(
+        if (!animename || !season || !ep || !email || !comment) {
+            return res.status(400).send({ message: "Missing required fields" });
+        }
+
+        const commentAdd = await video.updateOne(
             { animename, season, ep },
             {
                 $push: {
                     comments: {
                         email,
-                        comment
+                        comment,
                     }
                 }
             }
         );
 
+        if (commentAdd.nModified === 0) {
+            return res.status(404).send({ message: "Anime episode not found" });
+        }
+
         res.send({ message: "Comment added successfully", data: commentAdd });
     } catch (error) {
         console.error('Error adding comment:', error);
+
+        if (error.name === 'ValidationError') {
+            return res.status(400).send({ message: "Invalid data", details: error.message });
+        }
+
         res.status(500).send({ message: "Internal server error" });
     }
 });
+
 
 
   
