@@ -311,9 +311,9 @@ app.post("/userdetailupdate", async (req, res) => {
  
 app.post("/comment", async (req, res) => {
     try {
-        const { animename, season, ep, email, comment } = req.body;
+        const { animename, season, ep, email, comment ,image} = req.body;
 
-        if (!animename || !season || !ep || !email || !comment) {
+        if (!animename || !season || !ep || !email || !comment ) {
             return res.status(400).send({ 
                 message: "Missing required fields", 
                 gmail: email, 
@@ -331,6 +331,7 @@ app.post("/comment", async (req, res) => {
                     comments: {
                         email,
                         comment,
+                        image,
                     }
                 }
             }
