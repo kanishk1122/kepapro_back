@@ -388,7 +388,10 @@ app.post("/updatevideo", async (req, res) => {
     try {
 
         const result = await video.updateOne(
-            { _id : req.body.id },
+            { animename: req.body.animename,
+             season: req.body.season,
+             ep: req.body.ep,
+            },
             {
                 $set: {
   videolink: req.body.videolink,
