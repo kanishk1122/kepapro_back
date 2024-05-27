@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema({
         animename: String,
         season: Number,
         ep: Number
-    }]
+    }],
+    seasonname:String,
 });
 
 const User = mongoose.model("User", userSchema);
