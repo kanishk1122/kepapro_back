@@ -400,7 +400,7 @@ app.post("/updatevideo", async (req, res) => {
   description: req.body.description,
   genres: req.body.genres,
   animename:req.body.animename,
-  thumbnail: req.body.thumbnail,
+  thumnail: req.body.thumbnail,
   trending: req.body.trending,
   popular: req.body.populer,
 
