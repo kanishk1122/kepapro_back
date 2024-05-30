@@ -9,7 +9,7 @@ import adminmodel from './model/admin.js';
 import axios from "axios";
 import multer from 'multer';
 import video from './model/video.js';
-let Token =""
+let Token = ""
 
 const app = express();
 
@@ -17,14 +17,20 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'your_secret_key',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true } 
+    cookie: { secure: true }
 }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: ['https://kepapro.onrender.com', 'https://kepapro-back.onrender.com',"https://kepapro.vercel.app","http://localhost:4000","https://fantastic-journey-jjrx6wwjxxvjf5j6w-3000.app.github.dev/"], 
+    origin: [
+        'https://kepapro.onrender.com', 
+        'https://kepapro-back.onrender.com',
+        "https://kepapro.vercel.app",
+        "http://localhost:4000",
+        "https://fantastic-journey-jjrx6wwjxxvjf5j6w-3000.app.github.dev/"
+    ], 
     credentials: true, 
     methods: ["GET", "POST", "PUT", "DELETE"],
     secure: true,
@@ -53,17 +59,7 @@ const checkToken = (req, res, next) => {
 
 app.get("/", async (req, res) => {
     res.send("hellow")
-    // try {
-    //     const deletedata = await video.deleteMany({ animename: "Jurassic World" });
-    //     if (deletedata.deletedCount === 0) {
-    //         return res.status(404).json({ message: "No documents found with animename 'Jurassic World'" });
-    //     }
-    //     res.status(200).json(deletedata);
-    // } catch (error) {
-    //     res.status(500).json({ message: "An error occurred while deleting documents", error: error.message });
-    // }
 });
-
 
 app.post("/register", async (req, res) => {
     try {
@@ -80,9 +76,9 @@ app.post("/register", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-              Token = jwt.sign({ email: req.body.email , username : req.body.username   }, process.env.JWT_SECRET || 'secret');
+                Token = jwt.sign({ email: req.body.email, username: req.body.username }, process.env.JWT_SECRET || 'secret');
                 res.send(Token);
-                console.log(Token,"this from register");
+                console.log(Token, "this from register");
             });
         });
     } catch (error) {
@@ -106,7 +102,10 @@ app.post("/createadmin", async (req, res) => {
                     password: hash,
                     age: req.body.age,
                 });
-                Token = jwt.sign({ email: req.body.email , username : req.body.username , Admin : "yes"  }, process.env.JWT_SECRET || 'secret');
+                Token = jwt.sign(
+                    { email: req.body.email, username: req.body.username, Admin: "yes" },
+                    process.env.JWT_SECRET || 'secret'
+                );
                 res.send(Token);
             });
         });
@@ -115,7 +114,6 @@ app.post("/createadmin", async (req, res) => {
         return res.status(500).send("Internal Server Error");
     }
 });
-
 
 app.post("/login", async (req, res) => {
     try {
@@ -127,7 +125,7 @@ app.post("/login", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            Token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret') ;
+            Token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret');
             return res.send(Token);
         } else {
             console.log("Incorrect password");
@@ -139,9 +137,6 @@ app.post("/login", async (req, res) => {
     }
 });
 
-
-
-
 app.post("/adminlogin", async (req, res) => {
     try {
         const user = await adminmodel.findOne({ email: req.body.email });
@@ -152,7 +147,7 @@ app.post("/adminlogin", async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (passwordMatch) {
-            Token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret') ;
+            Token = jwt.sign({ email: user.email, username: user.username }, process.env.JWT_SECRET || 'secret');
             return res.send(Token);
         } else {
             console.log("Incorrect password");
@@ -166,7 +161,7 @@ app.post("/adminlogin", async (req, res) => {
 
 app.post('/addlink', async (req, res) => {
     try {
-        const { links, languages, season, ep, description, rating, genres, thumbnail,seasonname, qualities, animename } = req.body;
+        const { links, languages, season, ep, description, rating, genres, thumbnail, seasonname, qualities, animename } = req.body;
 
         const videoDocuments = [];
 
@@ -178,7 +173,7 @@ app.post('/addlink', async (req, res) => {
                 ep: ep[i],
                 description,
                 genres,
-                thumnail,
+                thumnail: thumbnail,
                 quality: qualities[i],
                 rating,
                 animename,
@@ -206,21 +201,17 @@ app.get("/getall", async (req, res) => {
 });
 
 app.post("/userdetail", async (req, res) => {
-   try {
-    const oneuser = await usermodel.findOne({email:req.body.email})
-    res.send(oneuser)
-    
-   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-   }
-});   
-
+    try {
+        const oneuser = await usermodel.findOne({ email: req.body.email })
+        res.send(oneuser)
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 app.post("/user/addBookmark", async (req, res) => {
     try {
-        
-
         if (!req.body.email || !req.body.animename || !req.body.season || !req.body.ep) {
             return res.status(400).send({ message: "Missing required fields" });
         }
@@ -238,10 +229,10 @@ app.post("/user/addBookmark", async (req, res) => {
             {
                 $push: {
                     bookmarks: {
-                        animename : req.body.animename,
-                         season :req.body.season,
-                          ep:req.body.ep,
-                         }
+                        animename: req.body.animename,
+                        season: req.body.season,
+                        ep: req.body.ep,
+                    }
                 }
             }
         );
@@ -269,7 +260,6 @@ app.post("/userdetailupdate", async (req, res) => {
         console.log("New username:", newUsername);
         console.log("New userpic:", newUserpic);
 
-        // Find the current user details
         const user = await usermodel.findOne({ email: email });
 
         if (!user) {
@@ -280,10 +270,9 @@ app.post("/userdetailupdate", async (req, res) => {
         console.log("Current username:", user.username);
         console.log("Current userpic:", user.userpic);
 
-        // Update only if the new values are different
         if (user.username !== newUsername || user.userpic !== newUserpic) {
             const result = await usermodel.updateOne(
-                { email: email },    
+                { email: email },
                 {
                     $set: {
                         username: newUsername,
@@ -295,33 +284,31 @@ app.post("/userdetailupdate", async (req, res) => {
             console.log("Update result:", result);
 
             if (result.modifiedCount > 0) {
-                res.status(200).send({ message: "User details updated successfully" });    
+                res.status(200).send({ message: "User details updated successfully" });
             } else {
-                res.status(404).send({ message: "User not found" });    
+                res.status(404).send({ message: "User not found" });
             }
         } else {
             res.status(200).send({ message: "No changes detected, user details are the same" });
         }
     } catch (error) {
         console.error("An error occurred:", error);
-        res.status(500).send({ message: "An error occurred", error: error.message });    
+        res.status(500).send({ message: "An error occurred", error: error.message });
     }
 });
 
-
- 
 app.post("/comment", async (req, res) => {
     try {
-        const { animename, season, ep, email, comment ,image} = req.body;
+        const { animename, season, ep, email, comment, image } = req.body;
 
-        if (!animename || !season || !ep || !email || !comment ) {
-            return res.status(400).send({ 
-                message: "Missing required fields", 
-                gmail: email, 
-                animename: animename, 
-                season: season, 
-                ep: ep, 
-                comment: comment 
+        if (!animename || !season || !ep || !email || !comment) {
+            return res.status(400).send({
+                message: "Missing required fields",
+                gmail: email,
+                animename: animename,
+                season: season,
+                ep: ep,
+                comment: comment
             });
         }
 
@@ -354,57 +341,25 @@ app.post("/comment", async (req, res) => {
     }
 });
 
-
-
-  
-// app.post("/user/updateBookmark", async (req, res) => {
-//     try {
-//         const { email, bookmarkIndex, animename, season, ep } = req.body;
-
-//         const updateField = `bookmarks.${bookmarkIndex}`;
-
-//         const result = await usermodel.updateOne(
-//             { email },
-//             {
-//                 $set: {
-//                     [`${updateField}.animename`]: animename,
-//                     [`${updateField}.season`]: season,
-//                     [`${updateField}.ep`]: ep
-//                 }
-//             }
-//         );
-
-//         if (result.modifiedCount > 0) {
-//             res.status(200).send({ message: "Bookmark updated successfully" });
-//         } else {
-//             res.status(404).send({ message: "User not found or bookmark not found" });
-//         }
-//     } catch (error) {
-//         res.status(500).send({ message: "An error occurred", error: error.message });
-//     }
-// });
-
 app.post("/updatevideo", async (req, res) => {
     try {
-
         const result = await video.updateOne(
-            { animename: req.body.animename,
-             season: req.body.season,
-             ep: req.body.ep,
+            {
+                animename: req.body.animename,
+                season: req.body.season,
+                ep: req.body.ep,
             },
             {
                 $set: {
-  videolink: req.body.videolink,
-  season: req.body.season,
-  ep: req.body.ep,
-  description: req.body.description,
-  genres: req.body.genres,
-  animename:req.body.animename,
-  thumnail: req.body.thumbnail,
-  trending: req.body.trending,
-  popular: req.body.populer,
-
-
+                    videolink: req.body.videolink,
+                    season: req.body.season,
+                    ep: req.body.ep,
+                    description: req.body.description,
+                    genres: req.body.genres,
+                    animename: req.body.animename,
+                    thumnail: req.body.thumbnail,
+                    trending: req.body.trending,
+                    popular: req.body.populer,
                 }
             }
         );
@@ -419,9 +374,8 @@ app.post("/updatevideo", async (req, res) => {
     }
 });
 
-
 app.get("/watchall", async (req, res) => {
-    try { 
+    try {
         const response = await video.find();
         res.send(response);
     } catch (error) {
@@ -432,7 +386,7 @@ app.get("/watchall", async (req, res) => {
 
 app.get("/listUploadedUrls", checkToken, async (req, res) => {
     try {
-        const apiKey = '396272eryk12p9b7hdsjkc'; 
+        const apiKey = '396272eryk12p9b7hdsjkc';
         const response = await axios.get(`https://doodapi.com/api/urlupload/list?key=${apiKey}`);
         res.json(response.data);
     } catch (error) {
@@ -442,7 +396,7 @@ app.get("/listUploadedUrls", checkToken, async (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-    req.session.destroy(); 
+    req.session.destroy();
     res.redirect("/");
 });
 
