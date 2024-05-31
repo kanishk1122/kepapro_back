@@ -1,29 +1,15 @@
-
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const cors = require('cors');
+const usermodel = require("./model/user.js");
+const adminmodel = require('./model/admin.js');
 const axios = require("axios");
 const multer = require('multer');
+const video = require('./model/video.js');
 const fs = require('fs');
-
-let usermodel, adminmodel, video;
-
-// Load usermodel module asynchronously
-require("./model/user.js").then(module => {
-    usermodel = module;
-});
-// Load adminmodel module asynchronously
-require("./model/admin.js").then(module => {
-    adminmodel = module;
-});
-// Load video module asynchronously
-require("./model/video.js").then(module => {
-    video = module;
-});
-
     
 
 let Token = ""
