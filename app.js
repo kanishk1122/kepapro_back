@@ -345,9 +345,9 @@ app.post("/updatevideo", async (req, res) => {
     try {
         const result = await video.updateOne(
             {
-                animename: req.body.animename,
-                season: req.body.season,
-                ep: req.body.ep,
+                animename: req.body.oldanimename,
+                season: req.body.oldseason,
+                ep: req.body.oldep,
             },
             {
                 $set: {
