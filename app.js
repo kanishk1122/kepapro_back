@@ -1,25 +1,16 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const bcrypt = require('bcrypt');
-const jwt = require("jsonwebtoken");
-const session = require("express-session");
-const cors = require('cors');
-const axios = require("axios");
-const multer = require('multer');
-const fs = require('fs');
 
-let usermodel, adminmodel, video;
-
-import("./model/user.js").then(module => {
-    usermodel = module;
-});
-import("./model/admin.js").then(module => {
-    adminmodel = module;
-});
-import("./model/video.js").then(module => {
-    video = module;
-});
-let Token = ""
+import express from "express";
+import cookieParser from "cookie-parser";
+import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import session from "express-session";
+import cors from 'cors';
+import usermodel from "./model/user.js";
+import adminmodel from './model/admin.js'
+import axios from "axios";
+import multer from 'multer'
+import video from './model/video.js'
+import fs from 'fs'let Token = ""
 
 const app = express();
 
