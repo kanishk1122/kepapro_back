@@ -360,6 +360,7 @@ app.post("/updatevideo", async (req, res) => {
                     thumnail: req.body.thumbnail,
                     trending: req.body.trending,
                     popular: req.body.populer,
+                    seasonname:req.body.seasonname
                 }
             }
         );
