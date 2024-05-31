@@ -1,15 +1,15 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const bcrypt = require('bcrypt');
-const jwt = require("jsonwebtoken");
-const session = require("express-session");
-const cors = require('cors');
-const usermodel = require("./model/user.js");
-const adminmodel = require('./model/admin.js');
-const axios = require("axios");
-const multer = require('multer');
-const video = require('./model/video.js');
-const fs = require('fs');
+import express from "express";
+import cookieParser from "cookie-parser";
+import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import session from "express-session";
+import cors from 'cors';
+import usermodel from "./model/user.js";
+import adminmodel from './model/admin.js'
+import axios from "axios";
+import multer from 'multer'
+import video from './model/video.js'
+import fs from 'fs'
     
 
 let Token = ""
